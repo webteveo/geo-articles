@@ -1,6 +1,6 @@
 ---
 name: geo-article
-description: Escribe artículos de blog para sitios de servicios locales y rank and rent de Uruguay y Argentina, optimizados para que los citen AI Overviews, AI Mode, ChatGPT, Perplexity y Gemini y para rankear en Google, con redacción que suena a alguien del oficio y sin tics de IA. Usar cuando se pida "escribí un artículo", "post para el blog de <sitio>", "artículo sobre <keyword>", "contenido GEO", o se pase una keyword y un sitio de sites/.
+description: Escribe artículos de blog para sitios de servicios locales y rank and rent de Uruguay y Argentina, optimizados para que los citen AI Overviews, AI Mode, ChatGPT, Perplexity y Gemini y para rankear en Google, con redacción que suena a alguien del oficio y sin tics de IA. Usar cuando se pida "escribí un artículo", "post para el blog de <sitio>", "artículo sobre <keyword>", "contenido GEO", o se pase una keyword y la ficha de un sitio.
 ---
 
 # geo-article
@@ -14,12 +14,15 @@ Referencias (leelas en el paso indicado, no antes):
 - `references/plantillas.md`: 4 esqueletos según la intención.
 - `references/voz-por-sitio.md`: cómo aplicar la voz de la ficha.
 - `scripts/check_ai_tells.py`: linter. `scripts/frases_prohibidas.txt`: lista editable.
+- `assets/ficha-ejemplo.yaml`: formato de la ficha de sitio.
+
+Todas estas rutas son relativas a la carpeta de esta skill, no al directorio de trabajo. La skill funciona en cualquier lado: Claude Code en cualquier carpeta, claude.ai o la app de escritorio.
 
 ## Regla dura: no inventar
 
 PROHIBIDO inventar precios, estadísticas, porcentajes, testimonios, reseñas, casos, citas, años de experiencia, cantidad de trabajos o nombres de clientes. Un dato sale de uno de tres lugares:
 
-1. la ficha `sites/<sitio>.yaml`;
+1. la ficha del sitio;
 2. lo que el usuario responde en el paso 2;
 3. una fuente externa real, enlazada en el texto.
 
@@ -30,10 +33,10 @@ Si no está en ninguno, va `[DATO FALTANTE: qué falta exactamente]` y se sigue 
 Necesitás tres cosas:
 
 - **keyword principal** (ej: "cuánto cuesta una mudanza en Montevideo");
-- **sitio**: el id de la ficha. Leé `sites/<sitio>.yaml`;
+- **sitio**: su ficha. Buscala en este orden: `sites/<sitio>.yaml` en el directorio de trabajo (si existe), un archivo adjunto, o una ficha pegada en el chat o en la memoria/proyecto. El formato está en `assets/ficha-ejemplo.yaml`;
 - **intención**: precio, comparativa, problema-solución o FAQ local. Si no la dicen, deducila de la keyword con la tabla de `references/plantillas.md` y decí cuál elegiste.
 
-Si la ficha no existe, **pará**. Pedí que la creen copiando `sites/_ejemplo.yaml` y listá los campos mínimos: nombre, dominio, país, zona, servicios con URL, voz, autor. No arranques sin ficha.
+Si no hay ficha, **pará**. Pedila y listá los campos mínimos: nombre, dominio, país, zona, servicios con URL, voz, autor. Ofrecé armarla con el usuario a partir de `assets/ficha-ejemplo.yaml` (y guardala como `sites/<sitio>.yaml` si hay un directorio de trabajo con carpeta `sites/`). No arranques sin ficha.
 
 ## Paso 2. Input de experiencia
 
@@ -66,7 +69,7 @@ Datos externos solo con fuente real y enlace. Precios de la competencia no se pu
 
 ## Paso 4. Brief
 
-Guardalo en `articulos/<sitio>/<slug>.brief.md` y mostralo resumido antes de escribir (sin esperar aprobación salvo que el usuario lo haya pedido):
+Guardalo como `<slug>.brief.md` junto al artículo (ver dónde en el paso 7) y mostralo resumido antes de escribir (sin esperar aprobación salvo que el usuario lo haya pedido):
 
 - **Ángulo**: el hueco del paso 3 en una frase.
 - **Plantilla** elegida.
@@ -98,7 +101,7 @@ Leé ahora `references/geo.md`, `references/estilo-humano.md`, `references/voz-p
 3. Corré:
 
    ```bash
-   python3 .claude/skills/geo-article/scripts/check_ai_tells.py articulos/<sitio>/<slug>.md
+   python3 <carpeta de esta skill>/scripts/check_ai_tells.py <ruta del artículo>.md
    ```
 
 4. Corregí **todas las alertas altas** y volvé a correr hasta que salga con código 0. Las medias revisalas una por una: corregí o dejá anotado por qué quedan. Las bajas son orientativas.
@@ -108,7 +111,10 @@ No corrijas una alerta cambiando la palabra por un sinónimo: reescribí la fras
 
 ## Paso 7. Salida
 
-Archivo: `articulos/<sitio>/<slug>.md`. Slug en minúsculas, sin tildes, con guiones, basado en la keyword.
+Archivo `<slug>.md` (slug en minúsculas, sin tildes, con guiones, basado en la keyword). Dónde:
+
+- si el directorio de trabajo tiene carpeta `articulos/`: `articulos/<sitio>/<slug>.md`;
+- si no (claude.ai, app, otra carpeta): en la carpeta de salida disponible, y entregá el archivo al usuario.
 
 ```markdown
 ---
@@ -165,7 +171,7 @@ Respondé en pocas líneas:
 ## Tests del linter
 
 ```bash
-python3 -m pytest .claude/skills/geo-article/scripts -q
+python3 -m pytest <carpeta de esta skill>/scripts -q
 ```
 
 Si agregás una regla al linter, agregá un test que la dispare y uno que no.
