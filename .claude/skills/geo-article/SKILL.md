@@ -1,6 +1,6 @@
 ---
 name: geo-article
-description: Escribe artículos de blog para sitios de servicios locales y rank and rent de Uruguay y Argentina, optimizados para que los citen AI Overviews, AI Mode, ChatGPT, Perplexity y Gemini y para rankear en Google, con redacción que suena a alguien del oficio y sin tics de IA. Usar cuando se pida "escribí un artículo", "post para el blog de <sitio>", "artículo sobre <keyword>", "contenido GEO", o se pase una keyword y la ficha de un sitio.
+description: Escribe artículos de blog para sitios de servicios locales y rank and rent de Uruguay y Argentina, optimizados para que los citen AI Overviews, AI Mode, ChatGPT, Perplexity y Gemini y para rankear en Google, con redacción que suena a alguien del oficio y sin tics de IA. Usar cuando se pida "escribí un artículo", "post para el blog de tal sitio", "artículo sobre tal keyword", "contenido GEO", o se pase una keyword y la ficha de un sitio.
 ---
 
 # geo-article
